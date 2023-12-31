@@ -11,7 +11,7 @@ class StaticBlock extends Component
     use WithFileUploads;
 
     public $staticBlocks, $content, $title, $image, $blockId;
-    public $isModalOpen = 0;
+    public $isModalOpen = false;
 
     public function render()
     {
@@ -25,6 +25,14 @@ class StaticBlock extends Component
         $this->openModal();
     }
 
+    private function resetCreateForm()
+    {
+        $this->content = '';
+        $this->title = '';
+        $this->image = null;
+        $this->blockId = null;
+    }
+
     public function openModal()
     {
         $this->isModalOpen = true;
@@ -35,21 +43,15 @@ class StaticBlock extends Component
         $this->isModalOpen = false;
     }
 
-    private function resetCreateForm(){
-        $this->title = '';
-        $this->content = '';
-        $this->image = '';
-    }
-    
     public function save()
     {
         $this->validate([
             'title' => 'nullable|string',
             'content' => 'required|string',
-            'image' => 'nullable|image|max:1024', // 1MB Max
+            'image' => 'nullable|image|max:2048', // 2MB Max
         ]);
 
-        $block = StaticBlock::updateOrCreate(['id' => $this->blockId], [
+        StaticBlock::updateOrCreate(['id' => $this->blockId], [
             'title' => $this->title,
             'content' => $this->content,
             'image' => $this->image ? $this->image->store('images', 'public') : null,
@@ -69,10 +71,9 @@ class StaticBlock extends Component
 
         $this->openModal();
     }
-    
+
     public function delete($id)
     {
         StaticBlock::find($id)->delete();
-        session()->flash('message', 'Block Deleted Successfully.');
     }
 }
