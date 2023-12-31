@@ -6,7 +6,7 @@ use Livewire\Component;
 use App\Models\StaticBlock;
 use Livewire\WithFileUploads;
 
-class StaticBlock extends Component
+class StaticBlockComponent extends Component
 {
     use WithFileUploads;
 
